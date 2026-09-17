@@ -622,6 +622,39 @@ Additional options:
   </Tab>
 </Tabs>
 
+### Stellar Facilitator Setup
+
+The Stellar exact facilitator (`ExactStellarScheme` from `@x402/stellar/exact/facilitator`) accepts the following options:
+
+```typescript
+import { x402Facilitator } from "@x402/core/facilitator";
+import { ExactStellarScheme, createFacilitatorEd25519Signer } from "@x402/stellar/exact/facilitator";
+
+const stellarSigner = createFacilitatorEd25519Signer(
+  process.env.STELLAR_FACILITATOR_PRIVATE_KEY!,
+);
+
+const facilitator = new x402Facilitator()
+  .register(
+    "stellar:pubnet",
+    new ExactStellarScheme([stellarSigner], {
+      // Raise this on mainnet if settlements time out after a successful verify.
+      // Mainnet Soroban transactions often need more than the 100-stroop minimum to be included.
+      inclusionFeeStroops: 1000,
+      maxTransactionFeeStroops: 50_000,
+    }),
+  );
+```
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `inclusionFeeStroops` | `number` | `100` | Inclusion fee bid in stroops added on top of the simulation-derived resource fee for the settlement transaction and any fee bump. Increase this on mainnet if settlements time out after a successful verify. |
+| `maxTransactionFeeStroops` | `number` | `50000` | Safety ceiling in stroops. Verify rejects if the simulation-derived fee (resource fee + inclusion fee) exceeds this value. |
+| `areFeesSponsored` | `boolean` | `true` | Indicates whether the facilitator sponsors transaction fees. |
+| `rpcConfig` | `RpcConfig` | — | Optional custom RPC URL configuration. |
+| `feeBumpSigner` | `FacilitatorStellarSigner` | — | Optional signer used as fee source in a fee bump transaction wrapper. Decouples fee payment from sequence number management. |
+| `selectSigner` | `(addresses: readonly string[]) => string` | Round-robin | Callback to select which signer to use when multiple signers are provided. |
+
 ### EVM Transfer Methods
 
 The EVM implementation supports two transfer methods:
