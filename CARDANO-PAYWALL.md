@@ -105,6 +105,10 @@ and pays nothing.
 
 ## Resume
 
+Tracking issue: https://github.com/0xBora/x402/issues/1. Working PR
+(draft, the progress log): https://github.com/0xBora/x402/pull/2. Read
+the PR comments for findings per block before continuing.
+
 ```bash
 git fetch upstream && git rebase upstream/main
 cd typescript && pnpm install --frozen-lockfile
